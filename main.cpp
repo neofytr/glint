@@ -1,6 +1,7 @@
 #include "color/color.h"
 #include "ray/ray.h"
 #include "vector/vector.h"
+#include <bits/types/cookie_io_functions_t.h>
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
@@ -13,7 +14,20 @@ using namespace std;
 
 const char *imageName = "image.ppm";
 
+bool hitSphere(const Point &centre, double radius, const Ray &ray) {
+    Vector qc           = centre - ray.origin();
+    double a            = dot(ray.direction(), ray.direction());
+    double b            = -2.0 * dot(ray.direction(), qc);
+    double c            = dot(qc, qc) - radius * radius;
+    double discriminant = b * b - 4 * a * c;
+    return discriminant >= 0;
+}
+
 Color rayColor(const Ray &ray) {
+    if (hitSphere(Point(0, 0, -1), 0.5, ray)) {
+        return Color(1.0, 0, 0);
+    } // if the ray hits the sphere, render the sphere
+
     Vector unitDirection = unitVector(ray.direction());
     double a             = 0.5 * (unitDirection.y() + 1.0);
     return (1.0 - a) * Color(1.0, 1.0, 1.0) + a * Color(0.5, 0.7, 1.0);
@@ -52,7 +66,7 @@ int main() {
 
     Vector orthagonalOnViewPort(0, 0, -focalLength);
     Vector viewportUpperLeft =
-        cameraCentre + orthagonalOnViewPort - pixelDelta_v / 2 - pixelDelta_u / 2;
+        cameraCentre + orthagonalOnViewPort - viewport_u / 2 - viewport_v / 2;
     Point pixel00 = viewportUpperLeft + pixelDelta_u / 2 + pixelDelta_v / 2;
 
     ofstream image(imageName); // will create the file if it doesn't exist
@@ -75,12 +89,10 @@ int main() {
                  << flush;
         }
         for (int col = 0; col < imageWidth; col++) {
-            Point  pixelCentre = pixel00 + row * pixelDelta_v + col * pixelDelta_u;
-            Vector rayDirection =
-                pixelCentre -
-                cameraCentre; // ray is started from camera, and passes through the viewport
-                              // (through the corresponding pixel point) onto the scene
-            Ray directedRay(cameraCentre, rayDirection);
+            Point pixelCentre =
+                pixel00 + col * pixelDelta_u + row * pixelDelta_v; // Fixed this line
+            Vector rayDirection = pixelCentre - cameraCentre;
+            Ray    directedRay(cameraCentre, rayDirection);
 
             Color pixel = rayColor(directedRay);
             writePixelToFile(image, pixel);
