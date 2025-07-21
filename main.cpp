@@ -90,7 +90,7 @@ int main() {
         }
         for (int col = 0; col < imageWidth; col++) {
             Point pixelCentre =
-                pixel00 + col * pixelDelta_u + row * pixelDelta_v; // Fixed this line
+                pixel00 + col * pixelDelta_u + row * pixelDelta_v; 
             Vector rayDirection = pixelCentre - cameraCentre;
             Ray    directedRay(cameraCentre, rayDirection);
 
