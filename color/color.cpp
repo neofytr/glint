@@ -1,9 +1,11 @@
 #include "color.h"
 #include <fstream>
 
+// constructors
 Color::Color() : colors{0,0,0} {}
 Color::Color(double red, double green, double blue) : colors{red, green, blue} {}
 
+// helper functions
 void writePixelToFile(std::ofstream &file, const Color &pixelColor) {
     double r = pixelColor.red();
     double g = pixelColor.green();

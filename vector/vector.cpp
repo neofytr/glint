@@ -1,6 +1,5 @@
 #include "vector.h"
 
-
 // constructors
 Vector::Vector() : coords{0, 0, 0} {}
 Vector::Vector(double x, double y, double z) : coords{x, y, z} {}
