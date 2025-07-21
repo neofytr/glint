@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 
 using namespace std;
@@ -24,7 +25,12 @@ int main() {
     image << "255\n";
 
     // image pixel data
+    cout << "Rendering Progress -> 0.00%" << flush;
     for (int row = 0; row < imageHeight; row++) {
+        if (!(row % 5)) { // update more frequently
+            double progress = ((double)(row + 1) / imageHeight) * 100.0;
+            cout << "\rRendering Progress -> " << fixed << setprecision(2) << progress << "%" << flush;
+        }
         for (int col = 0; col < imageWidth; col++) {
             double r = double(row) / (imageHeight - 1);
             double g = double(col) / (imageWidth - 1);
@@ -37,5 +43,6 @@ int main() {
             image << ir << " " << ig << " " << ib << "\n";
         }
     }
+    cout << "\rRendering Progress -> 100.00%" << endl;
     return EXIT_SUCCESS;
 }
