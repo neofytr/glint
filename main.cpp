@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include "color/color.h"
 
 using namespace std;
 
@@ -32,15 +33,8 @@ int main() {
             cout << "\rRendering Progress -> " << fixed << setprecision(2) << progress << "%" << flush;
         }
         for (int col = 0; col < imageWidth; col++) {
-            double r = double(row) / (imageHeight - 1);
-            double g = double(col) / (imageWidth - 1);
-            double b = 0.0;
-
-            int ir = int(256.0 * r);
-            int ig = int(256.0 * g);
-            int ib = int(256.0 * b);
-
-            image << ir << " " << ig << " " << ib << "\n";
+            Color pixel(double(row) / (imageHeight - 1),double(col) / (imageWidth - 1), 0.0);
+            writePixelToFile(image, pixel);
         }
     }
     cout << "\rRendering Progress -> 100.00%" << endl;
