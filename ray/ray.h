@@ -24,9 +24,7 @@ class Ray {
         const Point &origin() const {return orig;} 
         const Vector &direction() const {return direc;}
 
-        Point at(double param) const {
-            return orig + param * direc;
-        }
+        Point at(double param) const;
 };
 
 #endif // RAY_H
