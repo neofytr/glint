@@ -36,15 +36,15 @@ class Vector {
 using Point = Vector; // point is just an alias for vector internally
 
 // vector utility functions
-inline std::ostream &operator<<(std::ostream &out, const Vector &vec);
-inline Vector operator+(const Vector &v, const Vector &u);
-inline Vector operator-(const Vector &v, const Vector &u);
-inline Vector operator*(const Vector &v, const Vector &u);
-inline Vector operator*(const double scaleFactor, const Vector &vec);
-inline Vector operator*(const Vector &vec, const double scaleFactor);
-inline Vector operator/(const Vector &vec, const double scaleFactor);
-inline double dot(const Vector &v, const Vector &u);
-inline Vector cross(const Vector &v, const Vector &u);
-inline Vector unitVector(const Vector &vec);
+std::ostream &operator<<(std::ostream &out, const Vector &vec);
+Vector operator+(const Vector &v, const Vector &u);
+Vector operator-(const Vector &v, const Vector &u);
+Vector operator*(const Vector &v, const Vector &u);
+Vector operator*(const double scaleFactor, const Vector &vec);
+Vector operator*(const Vector &vec, const double scaleFactor);
+Vector operator/(const Vector &vec, const double scaleFactor);
+double dot(const Vector &v, const Vector &u);
+Vector cross(const Vector &v, const Vector &u);
+Vector unitVector(const Vector &vec);
 
 #endif // VECTOR_H

@@ -18,6 +18,6 @@ void writePixelToFile(std::ofstream &file, const Color &pixelColor) {
     return;
 }
 
-inline std::ostream &operator<<(std::ostream &out, const Color &pixelValue) {
+std::ostream &operator<<(std::ostream &out, const Color &pixelValue) {
     return out << pixelValue.red() << " " << pixelValue.green() << " " << pixelValue.blue() << "\n";
 }

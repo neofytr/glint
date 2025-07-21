@@ -42,40 +42,40 @@ double Vector::length() const {
 }
 
 // vector utility functions
-inline std::ostream &operator<<(std::ostream &out, const Vector &vec) {
+std::ostream &operator<<(std::ostream &out, const Vector &vec) {
     return out << vec.x() << " " << vec.y() << " " << vec.z() << "\n";
 }
 
-inline Vector operator+(const Vector &v, const Vector &u) {
+Vector operator+(const Vector &v, const Vector &u) {
     return Vector(v.x() + u.x(), v.y() + u.y(), v.z() + u.z());
 }
 
-inline Vector operator-(const Vector &v, const Vector &u) {
+Vector operator-(const Vector &v, const Vector &u) {
     return Vector(v.x() - u.x(), v.y() - u.y(), v.z() - u.z());
 }
 
-inline Vector operator*(const Vector &v, const Vector &u) {
+ Vector operator*(const Vector &v, const Vector &u) {
     return Vector(v.x() * u.x(), v.y() * u.y(), v.z() * u.z());
 }
 
 // two separate so that * works both ways (t * v and v * t)
-inline Vector operator*(const double scaleFactor, const Vector &vec) {
+Vector operator*(const double scaleFactor, const Vector &vec) {
     return Vector(vec.x() * scaleFactor, vec.y() * scaleFactor, vec.z() * scaleFactor);
 }
 
-inline Vector operator*(const Vector &vec, const double scaleFactor) {
+Vector operator*(const Vector &vec, const double scaleFactor) {
     return Vector(vec.x() * scaleFactor, vec.y() * scaleFactor, vec.z() * scaleFactor);
 }
 
-inline Vector operator/(const Vector &vec, const double scaleFactor) {
+Vector operator/(const Vector &vec, const double scaleFactor) {
     return vec * (1 / scaleFactor);
 }
 
-inline double dot(const Vector &v, const Vector &u) {
+double dot(const Vector &v, const Vector &u) {
     return v.x() * u.x() + v.y() * u.y() + v.z() * u.z();
 }
 
-inline Vector cross(const Vector &v, const Vector &u) {
+Vector cross(const Vector &v, const Vector &u) {
     return Vector(
         v.y() * u.z() - v.z() * u.y(),
         v.z() * u.x() - v.x() * u.z(),
@@ -83,6 +83,6 @@ inline Vector cross(const Vector &v, const Vector &u) {
     );
 }
 
-inline Vector unitVector(const Vector &vec) {
+Vector unitVector(const Vector &vec) {
     return vec / vec.length();
 }

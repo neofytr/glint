@@ -15,7 +15,7 @@ class Color {
         inline double blue() const { return colors[2]; }
 };
 
-inline std::ostream &operator<<(std::ostream &out, const Color &pixelValue);
+std::ostream &operator<<(std::ostream &out, const Color &pixelValue);
 void writePixelToFile(std::ofstream &file, const Color &pixelColor);
 
 #endif // COLOR_H
