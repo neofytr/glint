@@ -5,9 +5,9 @@
 #define BIN "bin/"
 #define SRC "source/"
 #define INC "include/"
-#define VECTOR SRC "vector/"
-#define RAY SRC "ray/"
-#define COLOR SRC "color/"
+#define VECTOR "vector/"
+#define RAY "ray/"
+#define COLOR "color/"
 
 #define MAX_BUFLEN (2048 + 1)
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
     neo_compile_to_object_file(GPP, VECTOR "vector.cpp", BIN "vector.o", CXXFLAGS, false);
     neo_compile_to_object_file(GPP, RAY "ray.cpp", BIN "ray.o", CXXFLAGS, false);
     neo_compile_to_object_file(GPP, COLOR "color.cpp", BIN "color.o", CXXFLAGS, false);
-    neo_compile_to_object_file(GPP, SRC "main.cpp", BIN "main.o", CXXFLAGS, false);
+    neo_compile_to_object_file(GPP, "main.cpp", BIN "main.o", CXXFLAGS, false);
 
     neo_link(GPP, BIN "main", LFLAGS, false, BIN "main.o", BIN "vector.o", BIN "ray.o",
              BIN "color.o");
@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 
     if (argc > 1 && !strcmp(argv[1], "run")) {
         tmp = neocmd_create(BASH);
-        neocmd_append(tmp, "./", BIN "main");
+        neocmd_append(tmp, "./" BIN "main");
         neocmd_run_sync(tmp, NULL, NULL, false);
         neocmd_delete(tmp);
     }
