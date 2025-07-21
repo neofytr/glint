@@ -28,7 +28,7 @@ int main() {
     // image pixel data
     cout << "Rendering Progress -> 0.00%" << flush;
     for (int row = 0; row < imageHeight; row++) {
-        if (!(row % 5)) { // update more frequently
+        if (!(row % 5)) { 
             double progress = ((double)(row + 1) / imageHeight) * 100.0;
             cout << "\rRendering Progress -> " << fixed << setprecision(2) << progress << "%" << flush;
         }
