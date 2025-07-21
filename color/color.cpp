@@ -12,9 +12,9 @@ void writePixelToFile(std::ofstream &file, const Color &pixelColor) {
     double b = pixelColor.blue();
 
     // translate [0, 1] component values to the byte rate [0, 255]
-    int rbyte = int(256.0 * r);
-    int gbyte = int(256.0 * g);
-    int bbyte = int(256.0 * b);
+    int rbyte = int(255.999 * r);
+    int gbyte = int(255.999 * g);
+    int bbyte = int(255.999 * b);
 
     file << rbyte << " " << gbyte << " " << bbyte << "\n";
     return;

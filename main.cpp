@@ -43,7 +43,7 @@ int main() {
     // viewport vectors
     Vector viewport_u(viewportWidth, 0,
                       0); // horizontal vector along the viewport width from left to right
-    Vector viewport_v(-viewportHeight, 0,
+    Vector viewport_v(0, -viewportHeight,
                       0); // vertical vector along the viewport height from top to bottom
 
     // delta vectors from pixel to pixel
@@ -75,7 +75,7 @@ int main() {
                  << flush;
         }
         for (int col = 0; col < imageWidth; col++) {
-            Point  pixelCentre = pixel00 + row * pixelDelta_u + col * pixelDelta_v;
+            Point  pixelCentre = pixel00 + row * pixelDelta_v + col * pixelDelta_u;
             Vector rayDirection =
                 pixelCentre -
                 cameraCentre; // ray is started from camera, and passes through the viewport
