@@ -34,6 +34,9 @@ Color getRayColor(Ray &ray) {
     double t      = hitSphere(sphereCentre, radius, ray);
     if (t >= 0) { // so that the sphere is displayed only when it's in front of the camera
         Vector normal = unitVector(ray.at(t) - sphereCentre);
+        // normals have components between [-1, 1];
+        // since we need color components from 0 to 1
+        // we map like this -> color = 1/2 * (normal + (1, 1, 1));
         return 0.5 * Color(normal.x() + 1, normal.y() + 1, normal.z() + 1);
     }
     return Color(0, 0, 0);
