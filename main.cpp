@@ -2,6 +2,7 @@
 #include "ray/ray.h"
 #include "vector/vector.h"
 #include <cerrno>
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -13,22 +14,27 @@ using namespace std;
 
 const char *imageName = "image.ppm";
 
-bool hitSphere(Point &sphereCentre, double radius, Ray &ray) {
+double hitSphere(Point &sphereCentre, double radius, Ray &ray) {
     Vector oc           = ray.origin() - sphereCentre;
     double a            = dot(ray.direction(), ray.direction());
-    double b            = 2.0 * dot(oc, ray.direction());
+    double b            = -2.0 * dot(oc, ray.direction());
     double c            = dot(oc, oc) - radius * radius;
     double discriminant = b * b - 4 * a * c;
-    return discriminant >=
-           0; // doesn't distinguish between front and back of the camera since we don't check
-              // if t >= 0 or t < 0 (t >= 0 will be in front of camera and vice versa)
+
+    if (discriminant < 0) {
+        return -1.0;
+    } else {
+        return ((b - sqrt(discriminant)) / (2.0 * a)); // consider according to the facing surface
+    }
 }
 
 Color getRayColor(Ray &ray) {
-    Point  sphereCentre(0, 0, -4);
-    double radius = 1.0;
-    if (hitSphere(sphereCentre, radius, ray)) {
-        return Color(0.5, 0.5, 0.3);
+    Point  sphereCentre(0, 0, -1);
+    double radius = 0.5;
+    double t      = hitSphere(sphereCentre, radius, ray);
+    if (t >= 0) { // so that the sphere is displayed only when it's in front of the camera
+        Vector normal = unitVector(ray.at(t) - sphereCentre);
+        return 0.5 * Color(normal.x() + 1, normal.y() + 1, normal.z() + 1);
     }
     return Color(0, 0, 0);
 }
