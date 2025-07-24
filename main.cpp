@@ -1,7 +1,6 @@
 #include "color/color.h"
 #include "ray/ray.h"
 #include "vector/vector.h"
-#include <bits/types/cookie_io_functions_t.h>
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
@@ -14,60 +13,55 @@ using namespace std;
 
 const char *imageName = "image.ppm";
 
-bool hitSphere(const Point &centre, double radius, const Ray &ray) {
-    Vector qc           = centre - ray.origin();
+bool hitSphere(Point &sphereCentre, double radius, Ray &ray) {
+    Vector oc           = ray.origin() - sphereCentre;
     double a            = dot(ray.direction(), ray.direction());
-    double b            = -2.0 * dot(ray.direction(), qc);
-    double c            = dot(qc, qc) - radius * radius;
+    double b            = 2.0 * dot(oc, ray.direction());
+    double c            = dot(oc, oc) - radius * radius;
     double discriminant = b * b - 4 * a * c;
-    return discriminant >= 0;
+    return discriminant >=
+           0; // doesn't distinguish between front and back of the camera since we don't check
+              // if t >= 0 or t < 0 (t >= 0 will be in front of camera and vice versa)
 }
 
-Color rayColor(const Ray &ray) {
-    if (hitSphere(Point(0, 0, -1), 0.5, ray)) {
-        return Color(1.0, 0, 0);
-    } // if the ray hits the sphere, render the sphere
-
-    Vector unitDirection = unitVector(ray.direction());
-    double a             = 0.5 * (unitDirection.y() + 1.0);
-    return (1.0 - a) * Color(1.0, 1.0, 1.0) + a * Color(0.5, 0.7, 1.0);
+Color getRayColor(Ray &ray) {
+    Point  sphereCentre(0, 0, -4);
+    double radius = 1.0;
+    if (hitSphere(sphereCentre, radius, ray)) {
+        return Color(0.5, 0.5, 0.3);
+    }
+    return Color(0, 0, 0);
 }
 
 int main() {
     // image
     double aspectRatio = 16.0 / 9.0;
     int    imageWidth  = 256;
-
-    int imageHeight = int(imageWidth / aspectRatio);
-    if (imageHeight < 1)
-        imageHeight = 1; // ensure that the image height is atleast 1 pixel
+    int    imageHeight = int(imageWidth / aspectRatio);
 
     // viewport
     double viewportHeight = 2.0;
-    // in order for our viewport proportions to exactly match our image proportions, we use the
-    // calculated image aspect ratio to determine our final viewport width
-    double viewportWidth = viewportHeight * (double(imageWidth) / imageHeight);
+    double viewportWidth  = viewportHeight * ((double) imageWidth / imageHeight);
 
-    // camera (C)
-    // the line from the camera to the centre of the viewport (say L) is orthagonal to the viewport
-    // (say at point M)
-    double focalLength = 1.0;     // the length CM
-    Point  cameraCentre(0, 0, 0); // we set the origin to be the camera
+    // camera (0, 0, 0)
+    // the line from the camera to the viewport centre (say M) is perpendicular to the viewport
+    double focalLength = 1.0; // the distance CM
+    Point  camera(0, 0, 0);   // camera is at the origin
 
-    // viewport vectors
-    Vector viewport_u(viewportWidth, 0,
-                      0); // horizontal vector along the viewport width from left to right
-    Vector viewport_v(0, -viewportHeight,
-                      0); // vertical vector along the viewport height from top to bottom
+    // viewport edge vectors
+    Vector viewportU(viewportWidth, 0, 0);
+    Vector viewportV(0, -viewportHeight, 0);
 
-    // delta vectors from pixel to pixel
-    Vector pixelDelta_u = viewport_u / imageWidth;
-    Vector pixelDelta_v = viewport_v / imageHeight;
+    // delta vectors
+    Vector deltaU = viewportU / imageWidth;
+    Vector deltaV = viewportV / imageHeight;
 
-    Vector orthagonalOnViewPort(0, 0, -focalLength);
-    Vector viewportUpperLeft =
-        cameraCentre + orthagonalOnViewPort - viewport_u / 2 - viewport_v / 2;
-    Point pixel00 = viewportUpperLeft + pixelDelta_u / 2 + pixelDelta_v / 2;
+    // viewport top left
+    Vector perpendicularCM(0, 0, -focalLength);
+    Vector viewportTopLeft = camera + perpendicularCM - viewportU / 2 - viewportV / 2;
+
+    // pixel(0, 0) on the viewport
+    Vector pixel00 = viewportTopLeft + deltaU / 2 + deltaV / 2;
 
     ofstream image(imageName); // will create the file if it doesn't exist
     if (!image) {
@@ -89,13 +83,10 @@ int main() {
                  << flush;
         }
         for (int col = 0; col < imageWidth; col++) {
-            Point pixelCentre =
-                pixel00 + col * pixelDelta_u + row * pixelDelta_v; 
-            Vector rayDirection = pixelCentre - cameraCentre;
-            Ray    directedRay(cameraCentre, rayDirection);
-
-            Color pixel = rayColor(directedRay);
-            writePixelToFile(image, pixel);
+            Vector pixelrc = pixel00 + row * deltaV + col * deltaU;
+            Ray    rayThroughPixelRC(camera, (pixelrc - camera));
+            Color  pixelColor = getRayColor(rayThroughPixelRC);
+            writePixelToFile(image, pixelColor);
         }
     }
     cout << "\rRendering Progress -> 100.00%" << endl;
