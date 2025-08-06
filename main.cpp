@@ -14,18 +14,26 @@ using namespace std;
 
 const char *imageName = "image.ppm";
 
-double hitSphere(Point &sphereCentre, double radius, Ray &ray) {
+double hitSphere(const Point &sphereCentre, double radius, const Ray &ray) {
     Vector oc           = ray.origin() - sphereCentre;
     double a            = dot(ray.direction(), ray.direction());
-    double b            = -2.0 * dot(oc, ray.direction());
+    double b            = 2.0 * dot(oc, ray.direction());
     double c            = dot(oc, oc) - radius * radius;
     double discriminant = b * b - 4 * a * c;
 
-    if (discriminant < 0) {
-        return -1.0;
-    } else {
-        return ((b - sqrt(discriminant)) / (2.0 * a)); // consider according to the facing surface
+    if (discriminant < 0.0) {
+        return -1.0; // no intersection
     }
+
+    double sqrtD = sqrt(discriminant);
+    double t1    = (-b - sqrtD) / (2.0 * a); // closer intersection (since t1 <= t2 always)
+    double t2    = (-b + sqrtD) / (2.0 * a); // farther intersection
+
+    if (t1 >= 0.0)
+        return t1;
+    if (t2 >= 0.0)
+        return t2;
+    return -1.0; // both intersections are behind the ray origin
 }
 
 Color getRayColor(Ray &ray) {
@@ -88,8 +96,7 @@ int main() {
     for (int row = 0; row < imageHeight; row++) {
         if (!(row % 5)) {
             double progress = ((double) (row + 1) / imageHeight) * 100.0;
-            cout << "\rRendering Progress -> " << fixed << setprecision(2) << progress << "%"
-                 << flush;
+            cout << "\rRendering Progress -> " << fixed << setprecision(2) << progress << "%" << flush;
         }
         for (int col = 0; col < imageWidth; col++) {
             Vector pixelrc = pixel00 + row * deltaV + col * deltaU;
