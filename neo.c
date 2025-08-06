@@ -4,16 +4,21 @@
 
 #define BIN "bin/"
 #define SRC "source/"
-#define INC "include/"
-#define VECTOR "vector/"
 #define RAY "ray/"
 #define COLOR "color/"
+#define VECTOR "vector/"
+#define HITTABLE "hittable/"
+
+#define INC                                                                                                                                                                                            \
+    "-I" RAY " "                                                                                                                                                                                       \
+    "-I" COLOR " "                                                                                                                                                                                     \
+    "-I" VECTOR " "                                                                                                                                                                                    \
+    "-I" HITTABLE
 
 #define MAX_BUFLEN (2048 + 1)
 
-#define CXXFLAGS "-O2 -Wall -Wextra -std=c++17 -I" INC
-#define LFLAGS NULL
-
+#define CXXFLAGS "-O2 -Wall -Wextra -std=c++17 " INC
+#define LFLAGS ""
 int main(int argc, char **argv) {
     neocmd_t *cmd, *tmp;
     char      buf[MAX_BUFLEN];
@@ -56,8 +61,7 @@ int main(int argc, char **argv) {
     neo_compile_to_object_file(GPP, COLOR "color.cpp", BIN "color.o", CXXFLAGS, false);
     neo_compile_to_object_file(GPP, "main.cpp", BIN "main.o", CXXFLAGS, false);
 
-    neo_link(GPP, BIN "main", LFLAGS, false, BIN "main.o", BIN "vector.o", BIN "ray.o",
-             BIN "color.o");
+    neo_link(GPP, BIN "main", LFLAGS, false, BIN "main.o", BIN "vector.o", BIN "ray.o", BIN "color.o");
 
     if (argc > 1 && !strcmp(argv[1], "dis")) {
         tmp = neocmd_create(BASH);
